@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">admin</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_session">Create Session</string>
+    <string name="session_name">Session name:</string>
+    <string name="login">LOGIN</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password_click_here_to_recover_it">Forget your password? Click here to recover it!</string>
+</resources>
