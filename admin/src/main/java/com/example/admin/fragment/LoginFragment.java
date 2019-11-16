@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.admin.R;
 import com.example.admin.service.FireBaseDataManager;
+import com.example.admin.util.FragmentNavigation;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,7 +29,8 @@ public class LoginFragment extends BaseFragment {
     @BindView(R.id.login_button)
     Button loginButton;
 
-    private String email, password;
+    @BindView(R.id.forgot_password_text_view)
+    TextView forgotPasswordTextView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,7 +49,6 @@ public class LoginFragment extends BaseFragment {
     }
 
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -56,7 +58,14 @@ public class LoginFragment extends BaseFragment {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FireBaseDataManager.getInstance().loginUser(rootView.getContext() ,emailEditText, passwordEditText);
+                FireBaseDataManager.getInstance().loginUser(rootView.getContext(), emailEditText, passwordEditText);
+            }
+        });
+
+        forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentNavigation.getInstance(rootView.getContext()).showForgotDataFragment();
             }
         });
     }

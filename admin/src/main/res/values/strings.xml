@@ -16,4 +16,7 @@
     <string name="no_admin_privileges_message">The user has no admin privileges!</string>
     <string name="wrong_password_message">The password doesn\'t belongs to this email</string>
     <string name="wrong_password">Wrong Password</string>
+    <string name="please_give_your_email_to_recover_your_data">Please give your email to recover your data</string>
+    <string name="send_text">Send</string>
+    <string name="data_sent_to_your_email">Your data is sent to your email account</string>
 </resources>
