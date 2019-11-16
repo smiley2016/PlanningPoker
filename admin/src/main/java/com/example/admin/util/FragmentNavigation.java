@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.admin.R;
 import com.example.admin.activity.AdminActivity;
+import com.example.admin.fragment.CreateSessionFragment;
 import com.example.admin.fragment.LoginFragment;
 
 public class FragmentNavigation {
@@ -43,5 +44,10 @@ public class FragmentNavigation {
     public void showLoginFragment(){
         LoginFragment fragment = new LoginFragment();
         replaceFragment(fragment, false);
+    }
+
+    public void showCreateSessionFragment(){
+        CreateSessionFragment fragment = new CreateSessionFragment();
+        replaceFragment(fragment, true);
     }
 }

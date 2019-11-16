@@ -4,9 +4,9 @@ public class User {
     private Integer userId;
     private String email;
     private String password;
-    private Boolean isAdmin;
+    private boolean isAdmin;
 
-    public User(Integer userId, String email, String password, Boolean isAdmin) {
+    public User(Integer userId, String email, String password, boolean isAdmin) {
         this.userId = userId;
         this.email = email;
         this.password = password;
@@ -37,7 +37,7 @@ public class User {
         this.password = password;
     }
 
-    public Boolean getAdmin() {
+    public boolean getAdmin() {
         return isAdmin;
     }
 

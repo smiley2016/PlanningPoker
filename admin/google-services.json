@@ -42,6 +42,43 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26033315581:android:a115ec126c1f17ea99e894",
+        "android_client_info": {
+          "package_name": "com.example.planningpoker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "26033315581-vdqmfkido5ri63ph547njek6tive5cb6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.planningpoker",
+            "certificate_hash": "d7a9a4ac3bdff5a7a45d8d0234c743351456011c"
+          }
+        },
+        {
+          "client_id": "26033315581-9n5igledclmbu2r49jmmsvhcbo3ev6qj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgs-i7LSrpqcsCZWvtyNEJ_iUaJj7HadY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "26033315581-9n5igledclmbu2r49jmmsvhcbo3ev6qj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

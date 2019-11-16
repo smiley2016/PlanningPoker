@@ -56,9 +56,7 @@ public class LoginFragment extends BaseFragment {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                email = emailEditText.getText().toString().trim();
-                password = passwordEditText.getText().toString().trim();
-                FireBaseDataManager.getInstance().loginUser(email, password);
+                FireBaseDataManager.getInstance().loginUser(rootView.getContext() ,emailEditText, passwordEditText);
             }
         });
     }

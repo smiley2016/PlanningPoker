@@ -9,4 +9,11 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="forgot_password_click_here_to_recover_it">Forget your password? Click here to recover it!</string>
+    <string name="not_valid_email">Not valid email!</string>
+    <string name="user_not_exist">User not exist</string>
+    <string name="the_user_doesnt_exist_in_database">The user doesn\'t exist in the firestone database</string>
+    <string name="admin_privileges">Admin privileges</string>
+    <string name="no_admin_privileges_message">The user has no admin privileges!</string>
+    <string name="wrong_password_message">The password doesn\'t belongs to this email</string>
+    <string name="wrong_password">Wrong Password</string>
 </resources>
