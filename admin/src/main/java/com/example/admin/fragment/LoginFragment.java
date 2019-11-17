@@ -1,11 +1,14 @@
 package com.example.admin.fragment;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,12 +16,14 @@ import androidx.annotation.Nullable;
 
 import com.example.admin.R;
 import com.example.admin.service.FireBaseDataManager;
+import com.example.admin.service.OnProgressBarVisibilityListener;
 import com.example.admin.util.FragmentNavigation;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dmax.dialog.SpotsDialog;
 
-public class LoginFragment extends BaseFragment {
+public class LoginFragment extends BaseFragment implements OnProgressBarVisibilityListener {
 
     @BindView(R.id.login_email_edit_text)
     EditText emailEditText;
@@ -31,6 +36,9 @@ public class LoginFragment extends BaseFragment {
 
     @BindView(R.id.forgot_password_text_view)
     TextView forgotPasswordTextView;
+
+    @BindView(R.id.login_progress_bar)
+    ProgressBar loginProgressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +66,9 @@ public class LoginFragment extends BaseFragment {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FireBaseDataManager.getInstance().loginUser(rootView.getContext(), emailEditText, passwordEditText);
+                AlertDialog dialog = new SpotsDialog(rootView.getContext(), R.style.Custom);
+                dialog.show();
+                FireBaseDataManager.getInstance(LoginFragment.this).loginUser(rootView.getContext(), emailEditText, passwordEditText, dialog);
             }
         });
 
@@ -68,5 +78,14 @@ public class LoginFragment extends BaseFragment {
                 FragmentNavigation.getInstance(rootView.getContext()).showForgotDataFragment();
             }
         });
+
+
     }
+
+    @Override
+    public void setVisibilityOnProgressBar(int visibility) {
+
+    }
+
+
 }

@@ -59,7 +59,7 @@ public class ForgotDataFragment extends BaseFragment implements ForgotDataFragme
         recoverSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FireBaseDataManager.getInstance().recoverData(recoverEmailEditText, ForgotDataFragment.this);
+                FireBaseDataManager.getInstance(null).recoverData(recoverEmailEditText, ForgotDataFragment.this);
             }
         });
     }
