@@ -1,6 +1,5 @@
 package com.example.admin.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +40,7 @@ public class ForgotDataFragment extends BaseFragment implements ForgotDataFragme
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(rootView == null){
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.fragment_forgot_data, container, false);
             ButterKnife.bind(this, rootView);
         }
@@ -67,18 +66,16 @@ public class ForgotDataFragment extends BaseFragment implements ForgotDataFragme
 
     @Override
     public void setVisibility(int visibility, boolean isTaskSuccess) {
-        if(isTaskSuccess){
+        if (isTaskSuccess) {
+            feedBackTextView.setVisibility(View.INVISIBLE);
             recoverSendButton.setVisibility(visibility);
             recoverEmailEditText.setVisibility(visibility);
             forgotPasswordTextView.setText(R.string.data_sent_to_your_email);
 
-        }else{
+        } else {
             feedBackTextView.setVisibility(visibility);
+            feedBackTextView.setText(R.string.email_doesnt_exist);
         }
     }
 
-    @Override
-    public void sendMail(Intent intent) {
-        startActivity(Intent.createChooser(intent, "Send email..."));
-    }
 }

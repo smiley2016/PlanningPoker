@@ -1,47 +1,61 @@
 package com.example.common;
 
 public class User {
-    private Integer userId;
+    private String id;
+    private String name;
     private String email;
-    private String password;
-    private boolean isAdmin;
+    private String role;
+    private String uid;
 
-    public User(Integer userId, String email, String password, boolean isAdmin) {
-        this.userId = userId;
+    public User() {
+    }
+
+    public User(String id, String name, String email, String role, String uid) {
+        this.id = id;
+        this.name = name;
         this.email = email;
-        this.password = password;
-        this.isAdmin = isAdmin;
+        this.role = role;
+        this.uid = uid;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public String getId() {
+        return id;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public String getName() {
+        return name;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public void setRole(String role) {
+        this.role = role;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

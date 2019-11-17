@@ -19,4 +19,5 @@
     <string name="please_give_your_email_to_recover_your_data">Please give your email to recover your data</string>
     <string name="send_text">Send</string>
     <string name="data_sent_to_your_email">Your data is sent to your email account</string>
+    <string name="email_doesnt_exist">Email doesn\'t exist in database</string>
 </resources>
