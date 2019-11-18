@@ -20,4 +20,8 @@
     <string name="send_text">Send</string>
     <string name="data_sent_to_your_email">Your data is sent to your email account</string>
     <string name="email_doesnt_exist">Email doesn\'t exist in database</string>
+    <string name="my_session">My session</string>
+    <string name="cards">Cards:</string>
+    <string name="is_private">is private</string>
+    <string name="create">Create</string>
 </resources>

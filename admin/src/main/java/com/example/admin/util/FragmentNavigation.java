@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.admin.R;
 import com.example.admin.activity.AdminActivity;
+import com.example.admin.fragment.CreateQuestionFragment;
 import com.example.admin.fragment.CreateSessionFragment;
 import com.example.admin.fragment.ForgotDataFragment;
 import com.example.admin.fragment.LoginFragment;
@@ -54,6 +55,11 @@ public class FragmentNavigation {
 
     public void showForgotDataFragment(){
         ForgotDataFragment fragment = new ForgotDataFragment();
+        replaceFragment(fragment, true);
+    }
+
+    public void showCreateQuestionFragment() {
+        CreateQuestionFragment fragment = new CreateQuestionFragment();
         replaceFragment(fragment, true);
     }
 }
