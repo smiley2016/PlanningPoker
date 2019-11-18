@@ -1,7 +1,6 @@
 package com.example.admin.fragment;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import com.example.admin.R;
 import com.example.admin.service.FireBaseDataManager;
 import com.example.admin.service.OnProgressBarVisibilityListener;
 import com.example.admin.util.FragmentNavigation;
+import com.example.admin.util.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +68,7 @@ public class LoginFragment extends BaseFragment implements OnProgressBarVisibili
             public void onClick(View v) {
                 AlertDialog dialog = new SpotsDialog(rootView.getContext(), R.style.Custom);
                 dialog.show();
+                Utils.hideKeyboard(v);
                 FireBaseDataManager.getInstance(LoginFragment.this).loginUser(rootView.getContext(), emailEditText, passwordEditText, dialog);
             }
         });

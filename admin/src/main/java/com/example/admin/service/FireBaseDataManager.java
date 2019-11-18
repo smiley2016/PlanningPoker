@@ -18,11 +18,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Objects;
 
 public class FireBaseDataManager {
     private static final String TAG = FireBaseDataManager.class.getName();
@@ -85,7 +89,6 @@ public class FireBaseDataManager {
                             user = mAuth.getCurrentUser();
                             if (user != null) {
                                 uid = user.getUid();
-                                mAuth.signOut();
                                 db.collection("User")
                                         .whereEqualTo("UID", uid)
                                         .get()
@@ -102,17 +105,11 @@ public class FireBaseDataManager {
                                                                     if (task.isSuccessful()) {
                                                                         dialog.dismiss();
                                                                         FragmentNavigation.getInstance(context).showCreateSessionFragment();
-                                                                    } else {
-                                                                        Dialogs.showAlertDialog(context,
-                                                                                emailText,
-                                                                                passwordText,
-                                                                                context.getString(R.string.wrong_password),
-                                                                                context.getString(R.string.wrong_password_message),
-                                                                                listener, dialog);
                                                                     }
                                                                 }
                                                             });
                                                         } else {
+                                                            dialog.dismiss();
                                                             Dialogs.showAlertDialog(context,
                                                                     emailText,
                                                                     passwordText,
@@ -128,8 +125,9 @@ public class FireBaseDataManager {
                             }
 
                         } else {
-                            if (task.getException() != null) {
+                            if (task.getException() != null && task.getException() instanceof FirebaseAuthInvalidUserException) {
                                 Log.e(TAG, task.getException().toString());
+                                dialog.dismiss();
                                 Dialogs.showAlertDialog(context,
                                         emailText,
                                         passwordText,
@@ -137,6 +135,14 @@ public class FireBaseDataManager {
                                         context.getString(R.string.the_user_doesnt_exist_in_database),
                                         listener,
                                         dialog);
+                            }else if(task.getException() != null && task.getException() instanceof FirebaseAuthInvalidCredentialsException){
+                                dialog.dismiss();
+                                Dialogs.showAlertDialog(context,
+                                        emailText,
+                                        passwordText,
+                                        context.getString(R.string.wrong_password),
+                                        context.getString(R.string.wrong_password_message),
+                                        listener, dialog);
                             }
 
                         }
@@ -161,7 +167,11 @@ public class FireBaseDataManager {
                 .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
                     @Override
                     public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                        if (task.getResult().getSignInMethods().size() == 0) {
+                        if (Objects.requireNonNull(
+                                Objects.requireNonNull(
+                                        task.getResult())
+                                        .getSignInMethods())
+                                .size() == 0) {
                             callback.setVisibility(View.VISIBLE, false);
                         } else {
                             sendEmailWithData(callback, recoveryEmail);
