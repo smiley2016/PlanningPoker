@@ -43,5 +43,6 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
     implementation 'com.github.d-max:spots-dialog:0.4@aar'
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
 
 }

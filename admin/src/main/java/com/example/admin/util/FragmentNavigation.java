@@ -65,8 +65,9 @@ public class FragmentNavigation {
         replaceFragment(fragment, true);
     }
 
-    public void showStatisticsFragment() {
+    public void showStatisticsFragment(Bundle bundle) {
         StatisticsFragment fragment = new StatisticsFragment();
+        fragment.setArguments(bundle);
         replaceFragment(fragment, true);
     }
 }

@@ -118,11 +118,11 @@ public class CreateSessionFragment extends BaseFragment {
                                         maxSessionIdInDb = (Long) snapshot.getData().get("SessionId");
                                     }
 
-                                    if(maxSessionIdInDb == null){
+                                    if (maxSessionIdInDb == null) {
                                         maxSessionIdInDb = Long.parseLong("0");
                                     }
                                     Map<String, Object> session = new HashMap<>();
-                                    session.put("SessionId", maxSessionIdInDb+1);
+                                    session.put("SessionId", maxSessionIdInDb + 1);
                                     session.put("SessionName", sessionName);
                                     session.put("IsPrivate", isPrivate);
                                     session.put("IndexOfCard", indexOfCard);
@@ -142,7 +142,7 @@ public class CreateSessionFragment extends BaseFragment {
                                                             Toast.LENGTH_SHORT).show();
                                                     dialog.dismiss();
                                                     Bundle bundle = new Bundle();
-                                                    bundle.putLong("SESSION_ID",maxSessionIdInDb+1);
+                                                    bundle.putLong("SESSION_ID", maxSessionIdInDb + 1);
                                                     FragmentNavigation.getInstance(rootView.getContext())
                                                             .showCreateQuestionFragment(bundle);
                                                 }

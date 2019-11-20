@@ -133,8 +133,10 @@ public class CreateQuestionFragment extends BaseFragment {
                                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                 @Override
                                                 public void onSuccess(DocumentReference documentReference) {
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putLong("SESSION_ID", sessionId);
                                                     FragmentNavigation.getInstance(rootView.getContext())
-                                                            .showStatisticsFragment();
+                                                            .showStatisticsFragment(bundle);
                                                 }
                                             })
                                     .addOnFailureListener(new OnFailureListener() {
