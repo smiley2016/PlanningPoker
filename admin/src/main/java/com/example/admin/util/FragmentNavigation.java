@@ -12,6 +12,7 @@ import com.example.admin.activity.AdminActivity;
 import com.example.admin.fragment.CreateQuestionFragment;
 import com.example.admin.fragment.CreateSessionFragment;
 import com.example.admin.fragment.ForgotDataFragment;
+import com.example.admin.fragment.HomeFragment;
 import com.example.admin.fragment.LoginFragment;
 import com.example.admin.fragment.StatisticsFragment;
 
@@ -68,6 +69,11 @@ public class FragmentNavigation {
     public void showStatisticsFragment(Bundle bundle) {
         StatisticsFragment fragment = new StatisticsFragment();
         fragment.setArguments(bundle);
+        replaceFragment(fragment, true);
+    }
+
+    public void showHomeFragment() {
+        HomeFragment fragment = new HomeFragment();
         replaceFragment(fragment, true);
     }
 }

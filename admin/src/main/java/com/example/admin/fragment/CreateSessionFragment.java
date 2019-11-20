@@ -126,6 +126,7 @@ public class CreateSessionFragment extends BaseFragment {
                                     session.put("SessionName", sessionName);
                                     session.put("IsPrivate", isPrivate);
                                     session.put("IndexOfCard", indexOfCard);
+                                    session.put("Time", "00:00");
                                     if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                                         session.put("UID", FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     }

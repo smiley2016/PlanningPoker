@@ -9,29 +9,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.admin.R;
-import com.example.admin.util.Dialogs;
 import com.example.admin.util.Utils;
 import com.google.zxing.WriterException;
-
-import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StatisticsFragment extends BaseFragment{
+public class StatisticsFragment extends BaseFragment {
 
     @BindView(R.id.qr_code_button)
     Button makeQrCodeButton;
-
-    @BindView(R.id.statistics_recycler_view)
-    RecyclerView statisticsRecyclerView;
 
     @BindView(R.id.diagram_button)
     Button diagram;
@@ -41,7 +34,7 @@ public class StatisticsFragment extends BaseFragment{
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(getArguments() != null){
+        if (getArguments() != null) {
             sessionId = getArguments().getLong("SESSION_ID");
         }
     }
@@ -54,7 +47,7 @@ public class StatisticsFragment extends BaseFragment{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(rootView == null){
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.statistics_fragment, container, false);
         }
         ButterKnife.bind(this, rootView);
@@ -67,7 +60,7 @@ public class StatisticsFragment extends BaseFragment{
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void initViews(){
+    private void initViews() {
         makeQrCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

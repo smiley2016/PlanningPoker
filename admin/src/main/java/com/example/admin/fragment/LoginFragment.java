@@ -18,6 +18,8 @@ import com.example.admin.service.FireBaseDataManager;
 import com.example.admin.service.OnProgressBarVisibilityListener;
 import com.example.admin.util.FragmentNavigation;
 import com.example.admin.util.Utils;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,5 +90,12 @@ public class LoginFragment extends BaseFragment implements OnProgressBarVisibili
 
     }
 
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null){
+            FragmentNavigation.getInstance(getContext()).showHomeFragment();
+        }
+    }
 }

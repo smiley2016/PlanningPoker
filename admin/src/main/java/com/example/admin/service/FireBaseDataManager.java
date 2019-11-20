@@ -104,7 +104,7 @@ public class FireBaseDataManager {
                                                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                                                     if (task.isSuccessful()) {
                                                                         dialog.dismiss();
-                                                                        FragmentNavigation.getInstance(context).showCreateSessionFragment();
+                                                                        FragmentNavigation.getInstance(context).showHomeFragment();
                                                                     }
                                                                 }
                                                             });

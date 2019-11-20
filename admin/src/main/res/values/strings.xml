@@ -32,4 +32,6 @@
     <string name="show_diagram">SHOW DIAGRAM</string>
     <string name="qrcode">QrCode</string>
     <string name="send_qr_code_text_view">If you want to get qr code to send it to partners click the button below</string>
+    <string name="open">OPEN</string>
+    <string name="join">JOIN</string>
 </resources>
