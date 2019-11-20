@@ -25,7 +25,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -59,7 +58,7 @@ public class CreateSessionFragment extends BaseFragment {
     private String sessionName;
     private boolean isPrivate;
     private int indexOfCard;
-    private int maxSessionIdinDb;
+    private int maxSessionIdInDb;
 
     public static String SESSION_NAME = "SESSION_NAME";
     public static String IS_PRIVATE = "IS_PRIVATE";
@@ -116,11 +115,11 @@ public class CreateSessionFragment extends BaseFragment {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful() && task.getResult() != null) {
                                     for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                        maxSessionIdinDb = (int) snapshot.getData().get("SessionId");
+                                        maxSessionIdInDb = (int) snapshot.getData().get("SessionId");
                                     }
                                 }
                                 Map<String, Object> session = new HashMap<>();
-                                session.put("SessionId", maxSessionIdinDb);
+                                session.put("SessionId", (int)(maxSessionIdInDb+1));
                                 session.put("SessionName", sessionName);
                                 session.put("IsPrivate", isPrivate);
                                 session.put("IndexOfCard", indexOfCard);
@@ -139,8 +138,10 @@ public class CreateSessionFragment extends BaseFragment {
                                                                 + documentReference.getId(),
                                                         Toast.LENGTH_SHORT).show();
                                                 dialog.dismiss();
+                                                Bundle bundle = new Bundle();
+                                                bundle.putInt("SESSION_ID", maxSessionIdInDb+1);
                                                 FragmentNavigation.getInstance(rootView.getContext())
-                                                        .showCreateQuestionFragment();
+                                                        .showCreateQuestionFragment(bundle);
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
