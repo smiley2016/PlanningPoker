@@ -28,4 +28,8 @@
     <string name="description">Description</string>
     <string name="start">Start</string>
     <string name="session_id">SessionID:</string>
+    <string name="no_statistics_yet">There is no statistics yet!\n You will see if everybody voted!</string>
+    <string name="show_diagram">SHOW DIAGRAM</string>
+    <string name="qrcode">QrCode</string>
+    <string name="send_qr_code_text_view">If you want to get qr code to send it to partners click the button below</string>
 </resources>

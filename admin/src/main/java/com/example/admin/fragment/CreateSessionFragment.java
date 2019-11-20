@@ -58,7 +58,7 @@ public class CreateSessionFragment extends BaseFragment {
     private String sessionName;
     private boolean isPrivate;
     private int indexOfCard;
-    private int maxSessionIdInDb;
+    private Long maxSessionIdInDb;
 
     public static String SESSION_NAME = "SESSION_NAME";
     public static String IS_PRIVATE = "IS_PRIVATE";
@@ -115,45 +115,50 @@ public class CreateSessionFragment extends BaseFragment {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful() && task.getResult() != null) {
                                     for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                        maxSessionIdInDb = (int) snapshot.getData().get("SessionId");
+                                        maxSessionIdInDb = (Long) snapshot.getData().get("SessionId");
                                     }
-                                }
-                                Map<String, Object> session = new HashMap<>();
-                                session.put("SessionId", (int)(maxSessionIdInDb+1));
-                                session.put("SessionName", sessionName);
-                                session.put("IsPrivate", isPrivate);
-                                session.put("IndexOfCard", indexOfCard);
-                                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                                    session.put("UID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                                    if(maxSessionIdInDb == null){
+                                        maxSessionIdInDb = Long.parseLong("0");
+                                    }
+                                    Map<String, Object> session = new HashMap<>();
+                                    session.put("SessionId", maxSessionIdInDb+1);
+                                    session.put("SessionName", sessionName);
+                                    session.put("IsPrivate", isPrivate);
+                                    session.put("IndexOfCard", indexOfCard);
+                                    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                                        session.put("UID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    }
+
+                                    db.collection("Session")
+                                            .add(session)
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                @Override
+                                                public void onSuccess(DocumentReference documentReference) {
+                                                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                                                    Toast.makeText(rootView.getContext(),
+                                                            "DocumentSnapshot added with ID: "
+                                                                    + documentReference.getId(),
+                                                            Toast.LENGTH_SHORT).show();
+                                                    dialog.dismiss();
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putLong("SESSION_ID",maxSessionIdInDb+1);
+                                                    FragmentNavigation.getInstance(rootView.getContext())
+                                                            .showCreateQuestionFragment(bundle);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.e(TAG, e.toString());
+                                                    dialog.dismiss();
+                                                    Toast.makeText(rootView.getContext(),
+                                                            "Query failure: "
+                                                                    + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
                                 }
 
-                                db.collection("Session")
-                                        .add(session)
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                            @Override
-                                            public void onSuccess(DocumentReference documentReference) {
-                                                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                                                Toast.makeText(rootView.getContext(),
-                                                        "DocumentSnapshot added with ID: "
-                                                                + documentReference.getId(),
-                                                        Toast.LENGTH_SHORT).show();
-                                                dialog.dismiss();
-                                                Bundle bundle = new Bundle();
-                                                bundle.putInt("SESSION_ID", maxSessionIdInDb+1);
-                                                FragmentNavigation.getInstance(rootView.getContext())
-                                                        .showCreateQuestionFragment(bundle);
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.e(TAG, e.toString());
-                                                dialog.dismiss();
-                                                Toast.makeText(rootView.getContext(),
-                                                        "Query failure: "
-                                                                + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
                             }
                         });
             }

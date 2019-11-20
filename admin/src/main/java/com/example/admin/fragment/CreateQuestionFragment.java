@@ -16,15 +16,18 @@ import androidx.annotation.Nullable;
 import com.example.admin.R;
 import com.example.admin.util.FragmentNavigation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +50,7 @@ public class CreateQuestionFragment extends BaseFragment {
     @BindView(R.id.session_id_text_view)
     TextView sessionIdTextView;
 
-    private int sessionId, maxAnswerId;
+    private Long sessionId, maxAnswerId;
     private String story, description;
     private FirebaseFirestore db;
 
@@ -55,7 +58,7 @@ public class CreateQuestionFragment extends BaseFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (getArguments() != null) {
-            int sessionId = getArguments().getInt("SESSION_ID", -1);
+            sessionId = getArguments().getLong("SESSION_ID", -1);
         }
 
     }
@@ -85,7 +88,7 @@ public class CreateQuestionFragment extends BaseFragment {
     private void initViews() {
 
         if(sessionId != -1){
-            sessionIdTextView.setText(sessionId);
+            sessionIdTextView.setText(String.valueOf(sessionId));
         }
 
         questionCreateButton.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +100,7 @@ public class CreateQuestionFragment extends BaseFragment {
 
 
                 db.collection("Question")
-                        .orderBy("AnswerId")
+                        .orderBy("AnswerId", Query.Direction.DESCENDING)
                         .limit(1)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -106,11 +109,15 @@ public class CreateQuestionFragment extends BaseFragment {
                                 if(task.isSuccessful() && task.getResult() != null)
                                 {
                                     for (QueryDocumentSnapshot snapshot: task.getResult()){
-                                        maxAnswerId = (int) snapshot.getData().get("AnswerId");
+                                        maxAnswerId = (Long) snapshot.getData().get("AnswerId");
+                                    }
+
+                                    if(maxAnswerId == null){
+                                        maxAnswerId = Long.parseLong("0");
                                     }
 
                                     Map<String, Object> question = new HashMap<>();
-                                    question.put("AnswerId", (maxAnswerId+1));
+                                    question.put("AnswerId", maxAnswerId.intValue()+1);
                                     question.put("SessionId", sessionId);
                                     question.put("Story", story);
                                     question.put("Description", description);
@@ -129,7 +136,13 @@ public class CreateQuestionFragment extends BaseFragment {
                                                     FragmentNavigation.getInstance(rootView.getContext())
                                                             .showStatisticsFragment();
                                                 }
-                                            });
+                                            })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.e(TAG, e.toString());
+                                        }
+                                    });
                                 }
                             }
                         });
