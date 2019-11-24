@@ -1,0 +1,2 @@
+include ':joiner', ':admin', ':model'
+rootProject.name='PlanningPoker'

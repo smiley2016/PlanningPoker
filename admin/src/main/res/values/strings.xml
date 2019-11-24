@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">admin</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_session">Create Session</string>
+    <string name="session_name">Session name:</string>
+    <string name="login">LOGIN</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password_click_here_to_recover_it">Forget your password? Click here to recover it!</string>
+    <string name="not_valid_email">Not valid email!</string>
+    <string name="user_not_exist">User not exist</string>
+    <string name="the_user_doesnt_exist_in_database">The user doesn\'t exist in the firestone database</string>
+    <string name="admin_privileges">Admin privileges</string>
+    <string name="no_admin_privileges_message">The user has no admin privileges!</string>
+    <string name="wrong_password_message">The password doesn\'t belongs to this email</string>
+    <string name="wrong_password">Wrong Password</string>
+    <string name="please_give_your_email_to_recover_your_data">Please give your email to recover your data</string>
+    <string name="send_text">Send</string>
+    <string name="data_sent_to_your_email">Your data is sent to your email account</string>
+    <string name="email_doesnt_exist">Email doesn\'t exist in database</string>
+    <string name="my_session">My session</string>
+    <string name="cards">Cards:</string>
+    <string name="is_private">is private</string>
+    <string name="create">Create</string>
+    <string name="story">Story:</string>
+    <string name="description">Description</string>
+    <string name="start">Start</string>
+    <string name="session_id">SessionID:</string>
+    <string name="no_statistics_yet">There is no statistics yet!\n You will see if everybody voted!</string>
+    <string name="show_diagram">SHOW DIAGRAM</string>
+    <string name="qrcode">QrCode</string>
+    <string name="send_qr_code_text_view">If you want to get qr code to send it to partners click the button below</string>
+    <string name="open">OPEN</string>
+    <string name="join">JOIN</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="sessions">Sessions</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="Open">Open</string>
+    <string name="Close">Close</string>
+</resources>
