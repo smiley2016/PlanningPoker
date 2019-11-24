@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/create_session"
+            android:icon="@drawable/ic_add_circle_outline_black_24dp"
+            android:title="@string/create_session"/>
+        <item android:id="@+id/sessions"
+            android:icon="@drawable/ic_pageview_black_24dp"
+            android:title="@string/sessions"/>
+        <item android:id="@+id/sign_out"
+            android:icon="@drawable/ic_do_not_disturb_alt_red_24dp"
+            android:title="@string/sign_out"/>
+    </group>
+</menu>

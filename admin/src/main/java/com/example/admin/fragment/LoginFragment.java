@@ -94,8 +94,12 @@ public class LoginFragment extends BaseFragment implements OnProgressBarVisibili
     public void onStart() {
         super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user != null){
+        AlertDialog dialog = new SpotsDialog(rootView.getContext(), R.style.Custom);
+        dialog.show();
+        if (user != null) {
             FragmentNavigation.getInstance(getContext()).showHomeFragment();
+            dialog.dismiss();
         }
+        dialog.dismiss();
     }
 }

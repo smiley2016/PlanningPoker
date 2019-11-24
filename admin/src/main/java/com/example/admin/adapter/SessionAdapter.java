@@ -1,8 +1,7 @@
 package com.example.admin.adapter;
 
 import android.content.Context;
-import android.os.CountDownTimer;
-import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,52 +15,47 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.admin.R;
 import com.example.common.Session;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.AdapterViewHolder> {
-
+public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> {
+    private static final String TAG = SessionAdapter.class.getName();
     private ArrayList<Session> sessions;
     private Context context;
-    private Handler timerHandler;
-    private Runnable timerRunnable;
 
-    public SessionAdapter(ArrayList<Session> sessions) {
+    public SessionAdapter(ArrayList<Session> sessions, Context context) {
         this.sessions = sessions;
+        this.context = context;
     }
 
     @NonNull
     @Override
-    public AdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context = parent.getContext();
-        return new AdapterViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.session_element, parent, false));
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.session_element, parent, false);
+        return new Holder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         Session session = sessions.get(position);
         holder.bind(session);
+
+        Log.e(TAG, "onBindViewHolder: " + sessions.size());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return sessions.size();
     }
 
-    public Handler getTimerHandler() {
-        return timerHandler;
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public Runnable getTimerRunnable() {
-        return timerRunnable;
-    }
-
-    class AdapterViewHolder extends RecyclerView.ViewHolder{
+    static class Holder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.private_image_view)
         ImageView privateImageView;
@@ -81,33 +75,40 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.AdapterV
         @BindView(R.id.join_session_button)
         Button joinSessionButton;
 
+        @BindView(R.id.end_timer)
+        TextView endTimer;
 
-        public AdapterViewHolder(@NonNull View itemView) {
+
+        Holder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(final Session session) {
+        void bind(Session session) {
             membersTextView.setText(String.valueOf(session.getMembers()));
-            sessionStory.setText(String.valueOf(session.getSessionName()));
-            timerTextView.setText(String.valueOf(session.getTime()));
+            sessionStory.setText(session.getSessionName());
+            timerTextView.setText(session.getTime());
+            endTimer.setText(session.getEndTimer());
 
-            timerHandler = new Handler();
-            timerRunnable = new Runnable() {
+            if (session.isPrivate()) {
+                privateImageView.setVisibility(View.VISIBLE);
+            } else {
+                privateImageView.setVisibility(View.INVISIBLE);
+            }
+
+            joinSessionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void run() {
-                    long millis = System.currentTimeMillis();
-                    int seconds = (int) (millis / 1000);
-                    int minutes = seconds / 60;
-                    seconds = seconds % 60;
+                public void onClick(View v) {
 
-                    timerTextView.setText(String.format("%d:%02d", minutes, seconds));
-
-                    timerHandler.postDelayed(this, 500);
                 }
-            };
+            });
 
-            timerHandler.postDelayed(timerRunnable, 0);
+            openSessionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
     }
 }

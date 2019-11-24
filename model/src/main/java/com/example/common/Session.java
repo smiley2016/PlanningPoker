@@ -6,9 +6,9 @@ public class Session {
     private String time;
     private String endTimer;
     private boolean isPrivate;
-    private Long sessionId;
+    private long sessionId;
 
-    public Session(long members, String sessionName, String time, String endTimer, boolean isPrivate, Long sessionId) {
+    public Session(long members, String sessionName, String time, String endTimer, boolean isPrivate, long sessionId) {
         this.members = members;
         this.sessionName = sessionName;
         this.time = time;
@@ -50,11 +50,11 @@ public class Session {
         isPrivate = aPrivate;
     }
 
-    public Long getSessionId() {
+    public long getSessionId() {
         return sessionId;
     }
 
-    public void setSessionId(Long sessionId) {
+    public void setSessionId(long sessionId) {
         this.sessionId = sessionId;
     }
 

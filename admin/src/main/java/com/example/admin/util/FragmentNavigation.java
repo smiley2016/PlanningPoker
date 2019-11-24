@@ -45,6 +45,13 @@ public class FragmentNavigation {
         mFragmentTransaction.commit();
     }
 
+    public Fragment getCurrentragment(){
+        if(mFragmentManager.getBackStackEntryCount() > 0){
+            return mFragmentManager.getFragments().get(mFragmentManager.getFragments().size()-1);
+        }
+        return null;
+    }
+
     public void showLoginFragment() {
         LoginFragment fragment = new LoginFragment();
         replaceFragment(fragment, false);
@@ -76,4 +83,6 @@ public class FragmentNavigation {
         HomeFragment fragment = new HomeFragment();
         replaceFragment(fragment, true);
     }
+
+
 }
