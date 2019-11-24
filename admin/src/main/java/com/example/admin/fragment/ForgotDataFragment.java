@@ -35,6 +35,8 @@ public class ForgotDataFragment extends BaseFragment implements ForgotDataFragme
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initViews();
+
     }
 
     @Nullable
@@ -44,7 +46,6 @@ public class ForgotDataFragment extends BaseFragment implements ForgotDataFragme
             rootView = inflater.inflate(R.layout.fragment_forgot_data, container, false);
             ButterKnife.bind(this, rootView);
         }
-        initViews();
         return rootView;
     }
 
@@ -59,7 +60,7 @@ public class ForgotDataFragment extends BaseFragment implements ForgotDataFragme
         recoverSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FireBaseDataManager.getInstance(null).recoverData(recoverEmailEditText, ForgotDataFragment.this);
+                FireBaseDataManager.getInstance().recoverData(recoverEmailEditText, ForgotDataFragment.this);
             }
         });
     }

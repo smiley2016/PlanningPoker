@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 
 import com.example.admin.R;
 import com.example.admin.service.FireBaseDataManager;
-import com.example.admin.service.OnProgressBarVisibilityListener;
 import com.example.admin.util.FragmentNavigation;
 import com.example.admin.util.Utils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dmax.dialog.SpotsDialog;
 
-public class LoginFragment extends BaseFragment implements OnProgressBarVisibilityListener {
+public class LoginFragment extends BaseFragment {
 
     @BindView(R.id.login_email_edit_text)
     EditText emailEditText;
@@ -71,7 +70,7 @@ public class LoginFragment extends BaseFragment implements OnProgressBarVisibili
                 AlertDialog dialog = new SpotsDialog(rootView.getContext(), R.style.Custom);
                 dialog.show();
                 Utils.hideKeyboard(v);
-                FireBaseDataManager.getInstance(LoginFragment.this).loginUser(rootView.getContext(), emailEditText, passwordEditText, dialog);
+                FireBaseDataManager.getInstance().loginUser(rootView.getContext(), emailEditText, passwordEditText, dialog);
             }
         });
 
@@ -82,11 +81,6 @@ public class LoginFragment extends BaseFragment implements OnProgressBarVisibili
             }
         });
 
-
-    }
-
-    @Override
-    public void setVisibilityOnProgressBar(int visibility) {
 
     }
 

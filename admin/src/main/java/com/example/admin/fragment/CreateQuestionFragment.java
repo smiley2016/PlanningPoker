@@ -117,7 +117,6 @@ public class CreateQuestionFragment extends BaseFragment {
                                     }
 
                                     Map<String, Object> question = new HashMap<>();
-                                    question.put("AnswerId", maxAnswerId.intValue()+1);
                                     question.put("SessionId", sessionId);
                                     question.put("Story", story);
                                     question.put("Description", description);

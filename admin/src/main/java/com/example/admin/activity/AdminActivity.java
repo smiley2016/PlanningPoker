@@ -1,6 +1,7 @@
 package com.example.admin.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -74,9 +75,9 @@ public class AdminActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onStart() {
+        Log.e(TAG, "onStart: ");
         super.onStart();
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {

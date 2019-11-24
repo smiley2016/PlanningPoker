@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:background="#FFFFFF"
-    android:visibility="visible">
+    android:visibility="visible"
+    android:layout_marginBottom="32dp">
 
     <ImageView
         android:id="@+id/private_image_view"
@@ -13,7 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_margin="32dp"
         android:visibility="visible"
-        android:background="@drawable/ic_lock_black_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

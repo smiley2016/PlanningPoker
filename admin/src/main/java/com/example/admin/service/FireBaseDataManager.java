@@ -37,20 +37,18 @@ public class FireBaseDataManager {
     private FirebaseUser user;
     private String email;
     private String password;
-    private OnProgressBarVisibilityListener listener;
 
-    public static FireBaseDataManager getInstance(OnProgressBarVisibilityListener listener) {
+    public static FireBaseDataManager getInstance() {
         if (sInstance == null) {
-            sInstance = new FireBaseDataManager(listener);
+            sInstance = new FireBaseDataManager();
         }
         return sInstance;
     }
 
-    private FireBaseDataManager(OnProgressBarVisibilityListener listener) {
+    private FireBaseDataManager() {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         uid = null;
-        this.listener = listener;
     }
 
     public void loginUser(final Context context, final EditText emailText, final EditText passwordText, final AlertDialog dialog) {
@@ -115,8 +113,7 @@ public class FireBaseDataManager {
                                                                     passwordText,
                                                                     context.getString(R.string.admin_privileges),
                                                                     context.getString(R.string.no_admin_privileges_message),
-                                                                    listener,
-                                                                    dialog);
+                                                                     dialog);
                                                         }
                                                     }
                                                 }
@@ -133,7 +130,6 @@ public class FireBaseDataManager {
                                         passwordText,
                                         context.getString(R.string.user_not_exist),
                                         context.getString(R.string.the_user_doesnt_exist_in_database),
-                                        listener,
                                         dialog);
                             }else if(task.getException() != null && task.getException() instanceof FirebaseAuthInvalidCredentialsException){
                                 dialog.dismiss();
@@ -142,7 +138,7 @@ public class FireBaseDataManager {
                                         passwordText,
                                         context.getString(R.string.wrong_password),
                                         context.getString(R.string.wrong_password_message),
-                                        listener, dialog);
+                                        dialog);
                             }
 
                         }

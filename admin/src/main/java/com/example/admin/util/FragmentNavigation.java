@@ -15,6 +15,7 @@ import com.example.admin.fragment.ForgotDataFragment;
 import com.example.admin.fragment.HomeFragment;
 import com.example.admin.fragment.LoginFragment;
 import com.example.admin.fragment.StatisticsFragment;
+import com.example.admin.fragment.VoteFragment;
 
 public class FragmentNavigation {
     private static FragmentNavigation sInstance;
@@ -84,5 +85,10 @@ public class FragmentNavigation {
         replaceFragment(fragment, true);
     }
 
+    public void showVoteFragment(Bundle bundle) {
+        VoteFragment fragment = new VoteFragment();
+        fragment.setArguments(bundle);
+        replaceFragment(fragment, true);
+    }
 
 }

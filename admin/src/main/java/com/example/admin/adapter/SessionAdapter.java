@@ -1,6 +1,7 @@
 package com.example.admin.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin.R;
+import com.example.admin.util.FragmentNavigation;
 import com.example.common.Session;
 
 import java.util.ArrayList;
@@ -50,12 +54,17 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
         return sessions.size();
     }
 
+    public void addToList(Session session){
+        sessions.add(session);
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    static class Holder extends RecyclerView.ViewHolder {
+    class Holder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.private_image_view)
         ImageView privateImageView;
@@ -85,28 +94,46 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
         }
 
         void bind(Session session) {
+            final Bundle bundle = new Bundle();
+            bundle.putLong("SESSION_MEMBER", session.getMembers());
+            bundle.putString("SESSION_STORY", session.getSessionName());
+            bundle.putLong("SESSION_CARD_INDEX", session.getIndexOfCard());
+            bundle.putString("SESSION_NAME", session.getSessionName());
+            bundle.putString("SESSION_START_TIME", session.getTime());
+            bundle.putString("SESSION_END_TIME", session.getEndTimer());
+            bundle.putBoolean("IS_PRIVATE", session.isPrivate());
+            bundle.putLong("SESSION_ID", session.getSessionId());
+
             membersTextView.setText(String.valueOf(session.getMembers()));
             sessionStory.setText(session.getSessionName());
             timerTextView.setText(session.getTime());
             endTimer.setText(session.getEndTimer());
 
             if (session.isPrivate()) {
-                privateImageView.setVisibility(View.VISIBLE);
+                Glide.with(context).load(R.drawable.ic_lock_outline_black_24dp)
+                        .skipMemoryCache(true)
+                        .override(75)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(privateImageView);
             } else {
-                privateImageView.setVisibility(View.INVISIBLE);
+                Glide.with(context).load(R.drawable.ic_lock_open_black_24dp)
+                        .skipMemoryCache(true)
+                        .override(75)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(privateImageView);
             }
 
             joinSessionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    FragmentNavigation.getInstance(context).showVoteFragment(bundle);
                 }
             });
 
             openSessionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    FragmentNavigation.getInstance(context).showVoteFragment(bundle);
                 }
             });
         }

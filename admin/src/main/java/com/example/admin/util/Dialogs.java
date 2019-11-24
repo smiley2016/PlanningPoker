@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.widget.EditText;
 
 import com.example.admin.service.FireBaseDataManager;
-import com.example.admin.service.OnProgressBarVisibilityListener;
 
 public class Dialogs {
 
@@ -15,7 +14,6 @@ public class Dialogs {
                                        final EditText passwordText,
                                        String title,
                                        String message,
-                                       final OnProgressBarVisibilityListener listener,
                                        final AlertDialog aDialog){
         new AlertDialog.Builder(context)
                 .setTitle(title)
@@ -24,7 +22,7 @@ public class Dialogs {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        FireBaseDataManager.getInstance(listener).loginUser(context, emailText, passwordText, aDialog);
+                        FireBaseDataManager.getInstance().loginUser(context, emailText, passwordText, aDialog);
                     }
                 })
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
