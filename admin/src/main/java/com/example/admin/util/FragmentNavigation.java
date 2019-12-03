@@ -14,6 +14,7 @@ import com.example.admin.fragment.CreateSessionFragment;
 import com.example.admin.fragment.ForgotDataFragment;
 import com.example.admin.fragment.HomeFragment;
 import com.example.admin.fragment.LoginFragment;
+import com.example.admin.fragment.QuestionFragment;
 import com.example.admin.fragment.StatisticsFragment;
 import com.example.admin.fragment.VoteFragment;
 
@@ -91,4 +92,9 @@ public class FragmentNavigation {
         replaceFragment(fragment, true);
     }
 
+    public void showQuestionFragment(Bundle bundle) {
+        QuestionFragment fragment = new QuestionFragment();
+        fragment.setArguments(bundle);
+        replaceFragment(fragment, true);
+    }
 }

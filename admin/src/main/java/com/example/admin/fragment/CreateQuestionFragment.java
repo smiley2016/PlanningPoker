@@ -27,7 +27,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class CreateQuestionFragment extends BaseFragment {
     @BindView(R.id.session_id_text_view)
     TextView sessionIdTextView;
 
-    private Long sessionId, maxAnswerId;
+    private Long sessionId, lastQuestionId;
     private String story, description;
     private FirebaseFirestore db;
 
@@ -98,9 +97,8 @@ public class CreateQuestionFragment extends BaseFragment {
                 description = descriptionEditText.getText().toString();
                 final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-
                 db.collection("Question")
-                        .orderBy("AnswerId", Query.Direction.DESCENDING)
+                        .orderBy("QuestionId", Query.Direction.DESCENDING)
                         .limit(1)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -109,23 +107,18 @@ public class CreateQuestionFragment extends BaseFragment {
                                 if(task.isSuccessful() && task.getResult() != null)
                                 {
                                     for (QueryDocumentSnapshot snapshot: task.getResult()){
-                                        maxAnswerId = (Long) snapshot.getData().get("AnswerId");
+                                        lastQuestionId = (Long) snapshot.getData().get("AnswerId");
                                     }
 
-                                    if(maxAnswerId == null){
-                                        maxAnswerId = Long.parseLong("0");
+                                    if(lastQuestionId == null){
+                                        lastQuestionId = Long.parseLong("0");
                                     }
 
                                     Map<String, Object> question = new HashMap<>();
                                     question.put("SessionId", sessionId);
                                     question.put("Story", story);
                                     question.put("Description", description);
-                                    if (currentUser != null) {
-                                        question.put("UID", currentUser.getUid());
-                                    }else{
-                                        Log.e(TAG, "User is null");
-                                        return;
-                                    }
+                                    question.put("QuestionId", lastQuestionId+1);
 
                                     db.collection("Question")
                                             .add(question)

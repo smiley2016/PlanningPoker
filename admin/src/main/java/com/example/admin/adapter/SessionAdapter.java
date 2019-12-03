@@ -18,8 +18,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin.R;
 import com.example.admin.util.FragmentNavigation;
 import com.example.common.Session;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,15 +99,15 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
             ButterKnife.bind(this, itemView);
         }
 
-        void bind(Session session) {
+        void bind(final Session session) {
             final Bundle bundle = new Bundle();
-            bundle.putLong("SESSION_MEMBER", session.getMembers());
-            bundle.putString("SESSION_STORY", session.getSessionName());
-            bundle.putLong("SESSION_CARD_INDEX", session.getIndexOfCard());
-            bundle.putString("SESSION_NAME", session.getSessionName());
-            bundle.putString("SESSION_START_TIME", session.getTime());
-            bundle.putString("SESSION_END_TIME", session.getEndTimer());
-            bundle.putBoolean("IS_PRIVATE", session.isPrivate());
+//            bundle.putLong("SESSION_MEMBER", session.getMembers());
+//            bundle.putString("SESSION_STORY", session.getSessionName());
+//            bundle.putLong("SESSION_CARD_INDEX", session.getIndexOfCard());
+//            bundle.putString("SESSION_NAME", session.getSessionName());
+//            bundle.putString("SESSION_START_TIME", session.getTime());
+//            bundle.putString("SESSION_END_TIME", session.getEndTimer());
+//            bundle.putBoolean("IS_PRIVATE", session.isPrivate());
             bundle.putLong("SESSION_ID", session.getSessionId());
 
             membersTextView.setText(String.valueOf(session.getMembers()));
@@ -126,14 +132,28 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
             joinSessionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentNavigation.getInstance(context).showVoteFragment(bundle);
+                    if(FirebaseAuth.getInstance().getCurrentUser() != null){
+                        Map<String, Object> memberUser = new HashMap<>();
+                        memberUser.put("SessionId", session.getSessionId());
+                        memberUser.put("UID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        db.collection("SessionMembers")
+                                .add(memberUser)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        FragmentNavigation.getInstance(context).showQuestionFragment(bundle);
+                                    }
+                                });
+                    }
                 }
             });
 
             openSessionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentNavigation.getInstance(context).showVoteFragment(bundle);
+                    FragmentNavigation.getInstance(context).showQuestionFragment(bundle);
                 }
             });
         }

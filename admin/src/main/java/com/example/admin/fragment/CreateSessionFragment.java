@@ -146,7 +146,7 @@ public class CreateSessionFragment extends BaseFragment {
                                                     Bundle bundle = new Bundle();
                                                     bundle.putLong("SESSION_ID", maxSessionIdInDb + 1);
                                                     FragmentNavigation.getInstance(rootView.getContext())
-                                                            .showCreateQuestionFragment(bundle);
+                                                            .showHomeFragment();
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {

@@ -31,6 +31,7 @@ public class HomeFragment extends BaseFragment {
     private SessionAdapter adapter;
     private ArrayList<Session> sessions;
     private String story;
+    private QueryDocumentSnapshot snapshot;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class HomeFragment extends BaseFragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful() && task.getResult() != null) {
-                            for (final QueryDocumentSnapshot snapshot : task.getResult()) {
+                            for (final QueryDocumentSnapshot snapshot : task.getResult()){
                                 final long sessionId = (long) snapshot.getData().get("SessionId");
                                 db.collection("SessionMembers")
                                         .whereEqualTo("SessionId", sessionId)
@@ -53,39 +54,18 @@ public class HomeFragment extends BaseFragment {
                                             public void onComplete(@NonNull Task<QuerySnapshot> smTask) {
                                                 if (smTask.isSuccessful() && smTask.getResult() != null) {
                                                     members = (long) smTask.getResult().size();
-                                                    db.collection("SessionMembers")
-                                                            .whereEqualTo("SessionId", sessionId)
-                                                            .get()
-                                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<QuerySnapshot> memberTask) {
-                                                                    if (memberTask.isSuccessful() && memberTask.getResult() != null) {
-                                                                        for (QueryDocumentSnapshot memberSnapshot : memberTask.getResult()) {
-                                                                            story = (String) memberSnapshot.getData().get("Story");
-                                                                            adapter.addToList(new Session(members,
-                                                                                    (String) snapshot.getData().get("SessionName"),
-                                                                                    (String) snapshot.getData().get("Time"),
-                                                                                    (String) snapshot.getData().get("EndTime"),
-                                                                                    (boolean) snapshot.getData().get("IsPrivate"),
-                                                                                    (long) snapshot.getData().get("SessionId"),
-                                                                                    story,
-                                                                                    (long) snapshot.getData().get("IndexOfCard")));
-                                                                        }
-                                                                    } else {
-                                                                        if(memberTask.getException() != null)
-                                                                        Log.e(TAG, memberTask.getException().toString());
-                                                                    }
-                                                                }
-                                                            });
+                                                    addToList(snapshot, members);
+                                                } else {
+                                                    if (smTask.getException() != null)
+                                                        Log.e(TAG, smTask.getException().toString());
                                                 }
                                             }
                                         });
-
                             }
                         }
                     }
                 });
-        Log.e(TAG, "onCreate: ");
+
     }
 
     @Nullable
@@ -99,6 +79,17 @@ public class HomeFragment extends BaseFragment {
         Log.e(TAG, "onCreateView: ");
         initViews();
         return rootView;
+    }
+
+    private void addToList(QueryDocumentSnapshot snapshot, long members){
+        adapter.addToList(new Session(this.members,
+                (String) snapshot.getData().get("SessionName"),
+                (String) snapshot.getData().get("Time"),
+                (String) snapshot.getData().get("EndTime"),
+                (boolean) snapshot.getData().get("IsPrivate"),
+                (long) snapshot.getData().get("SessionId"),
+                story,
+                (long) snapshot.getData().get("IndexOfCard")));
     }
 
     private void initViews() {

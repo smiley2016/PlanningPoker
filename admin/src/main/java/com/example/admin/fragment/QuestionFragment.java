@@ -5,37 +5,37 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.admin.R;
-import com.example.admin.adapter.VoteAdapter;
-import com.example.admin.util.Utils;
+import com.example.admin.adapter.QuestionAdapter;
+import com.example.admin.model.Question;
+import com.example.admin.util.FragmentNavigation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VoteFragment extends BaseFragment {
+public class QuestionFragment extends BaseFragment {
+    private static final String TAG = QuestionFragment.class.getName();
 
-    @BindView(R.id.vote_recycler_view)
+    @BindView(R.id.create_question_button)
+    Button createQuestionButton;
+
+    @BindView(R.id.question_recycler_view)
     RecyclerView recyclerView;
 
-    private VoteAdapter adapter;
-
+    private QuestionAdapter adapter;
     private long sessionId;
-    private long questionId;
-    private long cardIndex;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,9 +46,9 @@ public class VoteFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (rootView == null) {
-            rootView = inflater.inflate(R.layout.vote_fragment, container, false);
+            rootView = inflater.inflate(R.layout.question_fragment, container, false);
+            ButterKnife.bind(this, rootView);
         }
-        ButterKnife.bind(this, rootView);
         initViews();
         return rootView;
     }
@@ -59,34 +59,38 @@ public class VoteFragment extends BaseFragment {
     }
 
     private void initViews() {
-        final ArrayList<String> cards = new ArrayList<>(Arrays.asList(Utils.cards));
+        createQuestionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putLong("SESSION_ID", sessionId);
+                FragmentNavigation.getInstance(rootView.getContext()).showCreateQuestionFragment(bundle);
+            }
+        });
+
+        adapter = new QuestionAdapter();
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
+        recyclerView.setAdapter(adapter);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Session")
+        db.collection("Question")
                 .whereEqualTo("SessionId", sessionId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful() && task.getResult() != null){
-                            for(QueryDocumentSnapshot snapshot: task.getResult()){
-                                cardIndex = (long )snapshot.getData().get("IndexOfCard");
-                                adapter = new VoteAdapter(createArrayFromString(cards.get((int)cardIndex)), sessionId, questionId);
-
-                                recyclerView.setLayoutManager(new GridLayoutManager(rootView.getContext(), 3));
-                                recyclerView.setAdapter(adapter);
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                adapter.addToList(new Question(
+                                        (long) snapshot.getData().get("QuestionId"),
+                                        sessionId,
+                                        (String) snapshot.getData().get("Description"),
+                                        (String) snapshot.getData().get("Story")));
                             }
                         }
                     }
                 });
-
-
-    }
-
-    private ArrayList<String> createArrayFromString(String cardString) {
-        String [] splittedArray;
-        splittedArray =  cardString.split(", ");
-        return new ArrayList<>(Arrays.asList(splittedArray));
     }
 
     @Override
@@ -94,7 +98,6 @@ public class VoteFragment extends BaseFragment {
         super.onAttach(context);
         if (getArguments() != null) {
             sessionId = getArguments().getLong("SESSION_ID");
-            questionId = getArguments().getLong("QUESTION_ID");
         }
     }
 }
