@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">PlanningPoker</string>
+    <string name="to_join_session">To join a session please give us your name and the session ID</string>
+    <string name="name">Name</string>
+    <string name="session_id">Session ID</string>
+    <string name="join">Join</string>
 </resources>
