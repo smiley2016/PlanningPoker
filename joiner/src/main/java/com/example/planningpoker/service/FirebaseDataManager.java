@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.common.Answer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -79,7 +80,7 @@ public class FirebaseDataManager {
                                                                                         @Override
                                                                                         public void onSuccess(DocumentReference documentReference) {
                                                                                             Log.d(TAG, "onSuccess: User added to sessionMember");
-                                                                                            callback.onSessionJoined();
+                                                                                            callback.onSessionJoined((long)idSnapshot.getData().get("id"));
                                                                                         }
                                                                                     });
                                                                         }
@@ -97,5 +98,38 @@ public class FirebaseDataManager {
                     }
                 });
 
+    }
+
+    public void getUserName(long uid, final OnStatisticsCallback callback){
+        db.collection("Users")
+                .whereEqualTo("id", uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful() && task.getResult() != null){
+                            for(QueryDocumentSnapshot snapshot: task.getResult()){
+                                callback.onUserNameUpdate((String)snapshot.getData().get("UserName"));
+                            }
+                        }
+                    }
+                });
+    }
+
+    public void getAnswer(final long uid, final long sessionId, final long questionId, final String card, final OnStatisticsFragmentCallback callback){
+        db.collection("Answer")
+                .whereEqualTo("SessionId", sessionId)
+                .whereEqualTo("QuestionId", questionId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful() && task.getResult() != null){
+                            for(QueryDocumentSnapshot snapshot: task.getResult()){
+                                callback.onAnswerGetting(new Answer(uid,sessionId, questionId, card));
+                            }
+                        }
+                    }
+                });
     }
 }

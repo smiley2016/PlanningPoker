@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 public class JoinSessionFragment extends BaseFragment implements JoinSessionCallback {
 
     private static final String TAG = JoinSessionFragment.class.getName();
-    private String sessionId;
+    private Long sessionId;
     private String name;
 
     @BindView(R.id.join_button)
@@ -59,7 +59,7 @@ public class JoinSessionFragment extends BaseFragment implements JoinSessionCall
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sessionId = sessionIdEditText.getText().toString().trim();
+                sessionId = Long.valueOf(sessionIdEditText.getText().toString().trim());
                 name = nameEditText.getText().toString().trim();
                 FirebaseDataManager.getsInstance().joinToSession(name, Long.valueOf(sessionId), JoinSessionFragment.this);
             }
@@ -67,9 +67,10 @@ public class JoinSessionFragment extends BaseFragment implements JoinSessionCall
     }
 
     @Override
-    public void onSessionJoined() {
+    public void onSessionJoined(long id) {
         Bundle bundle = new Bundle();
-        bundle.putString("JOINER_NAME", name);
+        bundle.putLong("JOINER_ID", id);
+        bundle.putLong("SESSION_ID", sessionId);
         FragmentNavigation.getInstance(rootView.getContext())
                 .showQuestionFragment(bundle);
     }

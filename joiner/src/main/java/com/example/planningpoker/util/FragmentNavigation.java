@@ -11,6 +11,8 @@ import com.example.planningpoker.R;
 import com.example.planningpoker.activity.MainActivity;
 import com.example.planningpoker.fragment.JoinSessionFragment;
 import com.example.planningpoker.fragment.QuestionFragment;
+import com.example.planningpoker.fragment.StatisticsFragment;
+import com.example.planningpoker.fragment.VoteFragment;
 
 public class FragmentNavigation {
 
@@ -56,6 +58,18 @@ public class FragmentNavigation {
 
     public void showQuestionFragment(Bundle bundle){
         QuestionFragment fragment = new QuestionFragment();
+        fragment.setArguments(bundle);
+        replaceFragment(fragment, true);
+    }
+
+    public void showVoteFragment(Bundle bundle) {
+        VoteFragment fragment = new VoteFragment();
+        fragment.setArguments(bundle);
+        replaceFragment(fragment, true);
+    }
+
+    public void showStatisticsFragment(Bundle bundle) {
+        StatisticsFragment fragment = new StatisticsFragment();
         fragment.setArguments(bundle);
         replaceFragment(fragment, true);
     }

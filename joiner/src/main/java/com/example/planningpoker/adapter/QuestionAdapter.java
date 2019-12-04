@@ -1,4 +1,4 @@
-package com.example.admin.adapter;
+package com.example.planningpoker.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.admin.R;
 import com.example.common.Question;
-import com.example.admin.util.FragmentNavigation;
+import com.example.planningpoker.R;
+import com.example.planningpoker.util.FragmentNavigation;
 
 import java.util.ArrayList;
 
@@ -24,8 +24,10 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
 
     private Context context;
     private ArrayList<Question> questionList;
+    private long uid;
 
-    public QuestionAdapter() {
+    public QuestionAdapter(long id) {
+        uid = id;
         this.questionList = new ArrayList<>();
     }
 
@@ -50,12 +52,12 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
         return questionList.size();
     }
 
-    public void addToList(Question question){
+    public void addToList(Question question) {
         questionList.add(question);
         notifyDataSetChanged();
     }
 
-    public class QuestionViewHolder extends RecyclerView.ViewHolder{
+    class QuestionViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.question_text_view)
         TextView questionTextView;
 
@@ -70,7 +72,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(final Question question) {
+        void bind(final Question question) {
             questionTextView.setText(question.getQuestion());
             questionStory.setText(question.getStory());
 
@@ -80,6 +82,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
                     Bundle bundle = new Bundle();
                     bundle.putLong("SESSION_ID", question.getSessionId());
                     bundle.putLong("QUESTION_ID", question.getQuestionId());
+                    bundle.putLong("UID", uid);
                     FragmentNavigation.getInstance(context).showVoteFragment(bundle);
                 }
             });

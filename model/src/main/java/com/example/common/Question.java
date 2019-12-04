@@ -1,4 +1,4 @@
-package com.example.admin.model;
+package com.example.common;
 
 public class Question {
     private long questionId;
