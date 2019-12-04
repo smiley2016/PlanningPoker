@@ -13,9 +13,6 @@ import com.example.common.Answer;
 import com.example.planningpoker.R;
 import com.example.planningpoker.service.FirebaseDataManager;
 import com.example.planningpoker.service.OnStatisticsCallback;
-import com.example.planningpoker.util.FragmentNavigation;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -37,7 +34,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.St
     public StatisticsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         return new StatisticsViewHolder(LayoutInflater.from(context)
-                    .inflate(R.layout.statistics_item, parent, false));
+                .inflate(R.layout.statistics_item, parent, false));
     }
 
     @Override
@@ -51,7 +48,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.St
         return answers.size();
     }
 
-    public void addToList(Answer answer){
+    public void addToList(Answer answer) {
         answers.add(answer);
         notifyDataSetChanged();
     }

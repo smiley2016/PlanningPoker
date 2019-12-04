@@ -79,6 +79,7 @@ public class StatisticsFragment extends BaseFragment implements OnStatisticsFrag
     private void initViews() {
         adapter = new StatisticsAdapter(rootView.getContext());
 
+        statisticsRecyclerView.setHasFixedSize(true);
         statisticsRecyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
         statisticsRecyclerView.setAdapter(adapter);
 
