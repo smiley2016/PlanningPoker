@@ -46,4 +46,5 @@
     <string name="Open">Open</string>
     <string name="Close">Close</string>
     <string name="create_question">Create Question</string>
+    <string name="there_is_no_sessions">There is no Sessions!</string>
 </resources>

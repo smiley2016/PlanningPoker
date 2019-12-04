@@ -7,17 +7,15 @@ public class Session {
     private String endTimer;
     private boolean isPrivate;
     private long sessionId;
-    private String story;
     private long indexOfCard;
 
-    public Session(long members, String sessionName, String time, String endTimer, boolean isPrivate, long sessionId, String story, long indexOfCard) {
+    public Session(long members, String sessionName, String time, String endTimer, boolean isPrivate, long sessionId, long indexOfCard) {
         this.members = members;
         this.sessionName = sessionName;
         this.time = time;
         this.endTimer = endTimer;
         this.isPrivate = isPrivate;
         this.sessionId = sessionId;
-        this.story = story;
         this.indexOfCard = indexOfCard;
     }
 
@@ -67,20 +65,6 @@ public class Session {
 
     public void setEndTimer(String endTimer) {
         this.endTimer = endTimer;
-    }
-
-    public String getSessionDescription() {return story;}
-
-    public void setSessionDescription(String sessionDescription) {
-        this.story = sessionDescription;
-    }
-
-    public String getStory() {
-        return story;
-    }
-
-    public void setStory(String story) {
-        this.story = story;
     }
 
     public long getIndexOfCard() {

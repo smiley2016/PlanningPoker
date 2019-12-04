@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin.R;
+import com.example.admin.service.FireBaseDataManager;
+import com.example.admin.service.NoItemInListCallback;
 import com.example.admin.util.FragmentNavigation;
 import com.example.common.Session;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,10 +36,12 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
     private static final String TAG = SessionAdapter.class.getName();
     private ArrayList<Session> sessions;
     private Context context;
+    private NoItemInListCallback callback;
 
-    public SessionAdapter(ArrayList<Session> sessions, Context context) {
+    public SessionAdapter(ArrayList<Session> sessions, Context context, NoItemInListCallback callback) {
         this.sessions = sessions;
         this.context = context;
+        this.callback = callback;
     }
 
     @NonNull
@@ -65,6 +69,11 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
         notifyDataSetChanged();
     }
 
+    private void wipeList(){
+        sessions.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
@@ -74,9 +83,6 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
 
         @BindView(R.id.private_image_view)
         ImageView privateImageView;
-
-        @BindView(R.id.timer)
-        TextView timerTextView;
 
         @BindView(R.id.session_story_text_view)
         TextView sessionStory;
@@ -90,9 +96,8 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
         @BindView(R.id.join_session_button)
         Button joinSessionButton;
 
-        @BindView(R.id.end_timer)
-        TextView endTimer;
-
+        @BindView(R.id.delete_session_button)
+        ImageView deleteSessionButton;
 
         Holder(@NonNull View itemView) {
             super(itemView);
@@ -100,6 +105,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
         }
 
         void bind(final Session session) {
+
             final Bundle bundle = new Bundle();
 //            bundle.putLong("SESSION_MEMBER", session.getMembers());
 //            bundle.putString("SESSION_STORY", session.getSessionName());
@@ -110,10 +116,9 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
 //            bundle.putBoolean("IS_PRIVATE", session.isPrivate());
             bundle.putLong("SESSION_ID", session.getSessionId());
 
+
             membersTextView.setText(String.valueOf(session.getMembers()));
             sessionStory.setText(session.getSessionName());
-            timerTextView.setText(session.getTime());
-            endTimer.setText(session.getEndTimer());
 
             if (session.isPrivate()) {
                 Glide.with(context).load(R.drawable.ic_lock_outline_black_24dp)
@@ -144,6 +149,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
                                         FragmentNavigation.getInstance(context).showQuestionFragment(bundle);
+                                        wipeList();
                                     }
                                 });
                     }
@@ -153,7 +159,18 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
             openSessionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    wipeList();
                     FragmentNavigation.getInstance(context).showQuestionFragment(bundle);
+                }
+            });
+
+            deleteSessionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FireBaseDataManager.getInstance().deleteSession(session.getSessionId(), context);
+                    sessions.remove(session);
+                    notifyDataSetChanged();
+                    callback.onNoItemInList();
                 }
             });
         }

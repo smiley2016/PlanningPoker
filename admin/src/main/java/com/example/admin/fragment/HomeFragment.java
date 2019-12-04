@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.admin.R;
 import com.example.admin.adapter.SessionAdapter;
+import com.example.admin.service.NoItemInListCallback;
 import com.example.common.Session;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,7 +24,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends BaseFragment {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class HomeFragment extends BaseFragment implements NoItemInListCallback {
 
     private static final String TAG = HomeFragment.class.getName();
 
@@ -30,14 +35,45 @@ public class HomeFragment extends BaseFragment {
     private long members;
     private SessionAdapter adapter;
     private ArrayList<Session> sessions;
-    private String story;
-    private QueryDocumentSnapshot snapshot;
+
+    @BindView(R.id.no_session_item_text_view)
+    TextView noSessionItemTextView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sessions = new ArrayList<>();
         db = FirebaseFirestore.getInstance();
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.home_fragment, container, false);
+
+        }
+        ButterKnife.bind(this, rootView);
+        Log.e(TAG, "onCreateView: ");
+        initViews();
+        return rootView;
+    }
+
+    private void addToList(QueryDocumentSnapshot snapshot, long members){
+        adapter.addToList(new Session(this.members,
+                (String) snapshot.getData().get("SessionName"),
+                (String) snapshot.getData().get("Time"),
+                (String) snapshot.getData().get("EndTime"),
+                (boolean) snapshot.getData().get("IsPrivate"),
+                (long) snapshot.getData().get("SessionId"),
+                (long) snapshot.getData().get("IndexOfCard")));
+    }
+
+    private void initViews() {
+        adapter = new SessionAdapter(sessions, rootView.getContext(), this);
+
         db.collection("Session")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -62,39 +98,16 @@ public class HomeFragment extends BaseFragment {
                                             }
                                         });
                             }
+                            if(task.getResult().size()==0){
+                                noSessionItemTextView.setVisibility(View.VISIBLE);
+                            }
+                        }else{
+
+                            Log.e(TAG, "onComplete: " );
                         }
                     }
                 });
 
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        if (rootView == null) {
-            rootView = inflater.inflate(R.layout.home_fragment, container, false);
-
-        }
-        Log.e(TAG, "onCreateView: ");
-        initViews();
-        return rootView;
-    }
-
-    private void addToList(QueryDocumentSnapshot snapshot, long members){
-        adapter.addToList(new Session(this.members,
-                (String) snapshot.getData().get("SessionName"),
-                (String) snapshot.getData().get("Time"),
-                (String) snapshot.getData().get("EndTime"),
-                (boolean) snapshot.getData().get("IsPrivate"),
-                (long) snapshot.getData().get("SessionId"),
-                story,
-                (long) snapshot.getData().get("IndexOfCard")));
-    }
-
-    private void initViews() {
-
-        adapter = new SessionAdapter(sessions, rootView.getContext());
 
         RecyclerView sessionRecyclerView = rootView.findViewById(R.id.home_recycler_view);
         sessionRecyclerView.setAdapter(adapter);
@@ -112,5 +125,10 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onNoItemInList() {
+        noSessionItemTextView.setVisibility(View.VISIBLE);
     }
 }

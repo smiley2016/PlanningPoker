@@ -7,6 +7,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -15,6 +16,7 @@ import com.example.admin.interfaces.ForgotDataFragmentCallback;
 import com.example.admin.util.Dialogs;
 import com.example.admin.util.FragmentNavigation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,6 +39,7 @@ public class FireBaseDataManager {
     private FirebaseUser user;
     private String email;
     private String password;
+    private String document;
 
     public static FireBaseDataManager getInstance() {
         if (sInstance == null) {
@@ -180,5 +183,33 @@ public class FireBaseDataManager {
         callback.setVisibility(View.GONE, true);
         mAuth.sendPasswordResetEmail(recoveryEmail);
     }
+
+    public void deleteSession(long sessionId, final Context context){
+
+        db.collection("Session")
+                .whereEqualTo("SessionId", sessionId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful() && task.getResult() != null){
+                            for (QueryDocumentSnapshot documentSnapshot: task.getResult()){
+                                document = documentSnapshot.getId();
+                                db.collection("Session")
+                                        .document(document)
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(context, "The Session was removed successfully!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
+    }
+
+
 
 }
