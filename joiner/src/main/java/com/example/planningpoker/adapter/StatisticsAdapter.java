@@ -61,6 +61,7 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.St
         TextView voteTextView;
 
         private String name;
+        private String uAnswer;
 
         StatisticsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,14 +69,16 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.St
         }
 
         void bind(Answer answer) {
+            uAnswer = answer.getAnswer();
             FirebaseDataManager.getsInstance().getUserName(answer.getUid(), this);
-            userNameTextView.setText(name);
-            voteTextView.setText(String.valueOf(answer.getAnswer()));
+
         }
 
         @Override
         public void onUserNameUpdate(String name) {
             this.name = name;
+            userNameTextView.setText(name);
+            voteTextView.setText(String.valueOf(uAnswer));
         }
     }
 }
