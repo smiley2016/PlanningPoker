@@ -60,7 +60,7 @@ public class VoteAdapter extends RecyclerView.Adapter<VoteAdapter.Holder> {
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         String card = cards.get(position);
-        holder.bind(card, position);
+        holder.bind(card);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class VoteAdapter extends RecyclerView.Adapter<VoteAdapter.Holder> {
             ButterKnife.bind(this, itemView);
         }
 
-        void bind(final String card, final int position) {
+        void bind(final String card) {
 
             cardTextView.setText(card);
 
@@ -113,7 +113,7 @@ public class VoteAdapter extends RecyclerView.Adapter<VoteAdapter.Holder> {
                                             bundle.putLong("SESSION_ID", sessionId);
                                             bundle.putLong("UID", uid);
                                             bundle.putString("ANSWER", card);
-                                            bundle.putInt("POSITION", position);
+                                            bundle.putLong("POSITION", questionId);
                                             FragmentNavigation.getInstance(context).showStatisticsFragment(bundle);
                                         }
                                     });

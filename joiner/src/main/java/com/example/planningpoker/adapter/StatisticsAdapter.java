@@ -22,18 +22,15 @@ import butterknife.ButterKnife;
 public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.StatisticsViewHolder> {
 
     private ArrayList<Answer> answers;
-    private Context context;
 
-    public StatisticsAdapter(Context context) {
+    public StatisticsAdapter() {
         this.answers = new ArrayList<>();
-        this.context = context;
     }
 
     @NonNull
     @Override
     public StatisticsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context = parent.getContext();
-        return new StatisticsViewHolder(LayoutInflater.from(context)
+        return new StatisticsViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.statistics_item, parent, false));
     }
 
@@ -76,9 +73,8 @@ public class StatisticsAdapter extends RecyclerView.Adapter<StatisticsAdapter.St
 
         @Override
         public void onUserNameUpdate(String name) {
-            this.name = name;
             userNameTextView.setText(name);
-            voteTextView.setText(String.valueOf(uAnswer));
+            voteTextView.setText(uAnswer);
         }
     }
 }

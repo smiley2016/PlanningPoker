@@ -41,7 +41,7 @@ public class StatisticsFragment extends BaseFragment implements OnStatisticsFrag
     private Long sessionId;
     private long uid;
     private String card;
-    private int questionId;
+    private long questionId;
     private StatisticsAdapter adapter;
 
     @Override
@@ -51,7 +51,7 @@ public class StatisticsFragment extends BaseFragment implements OnStatisticsFrag
             sessionId = getArguments().getLong("SESSION_ID");
             uid = getArguments().getLong("UID");
             card = getArguments().getString("ANSWER");
-            questionId = getArguments().getInt("POSITION");
+            questionId = getArguments().getLong("POSITION");
         }
     }
 
@@ -77,13 +77,13 @@ public class StatisticsFragment extends BaseFragment implements OnStatisticsFrag
     }
 
     private void initViews() {
-        adapter = new StatisticsAdapter(rootView.getContext());
+        adapter = new StatisticsAdapter();
 
         statisticsRecyclerView.setHasFixedSize(true);
         statisticsRecyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
         statisticsRecyclerView.setAdapter(adapter);
 
-        FirebaseDataManager.getsInstance().getAnswer(uid, sessionId, questionId, card, this);
+        FirebaseDataManager.getsInstance().getAnswer(sessionId, questionId, this);
 
         makeQrCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override

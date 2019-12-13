@@ -186,6 +186,61 @@ public class FireBaseDataManager {
 
     public void deleteSession(long sessionId, final Context context){
 
+        searchSessionsBySessionUID(sessionId, context);
+
+        searchSessionMembersBySessionId(sessionId);
+
+        searchQuestionInSessions(sessionId);
+
+        searchAnswerBySessionId(sessionId);
+
+    }
+
+    private void searchAnswerBySessionId(long sessionId){
+        db.collection("Answer")
+                .whereEqualTo("SessionId", sessionId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful() && task.getResult() != null){
+                            for(QueryDocumentSnapshot snapshot: task.getResult()){
+                                deleteAnswer(snapshot);
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void deleteAnswer(QueryDocumentSnapshot snapshot){
+        db.collection("Answer")
+                .document(snapshot.getId())
+                .delete();
+    }
+
+    private void deleteQuestionsFromSession(QueryDocumentSnapshot snapshot){
+        db.collection("Question")
+                .document(snapshot.getId())
+                .delete();
+    }
+
+    private void searchQuestionInSessions(final long sessionId){
+        db.collection("Question")
+                .whereEqualTo("SessionId", sessionId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful() && task.getResult()!= null){
+                            for(QueryDocumentSnapshot snapshot: task.getResult()){
+                                deleteQuestionsFromSession(snapshot);
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void searchSessionsBySessionUID(final long sessionId, final Context context){
         db.collection("Session")
                 .whereEqualTo("SessionId", sessionId)
                 .get()
@@ -194,22 +249,70 @@ public class FireBaseDataManager {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful() && task.getResult() != null){
                             for (QueryDocumentSnapshot documentSnapshot: task.getResult()){
-                                document = documentSnapshot.getId();
-                                db.collection("Session")
-                                        .document(document)
-                                        .delete()
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(context, "The Session was removed successfully!", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                deleteSession(documentSnapshot.getId(), context);
                             }
                         }
                     }
                 });
     }
 
+    private void deleteSession(String document, final Context context){
+        db.collection("Session")
+                .document(document)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(context, "Session deleted and it's all data!", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
 
+    private void deleteUserFromSession(long id){
+        db.collection("User")
+                .whereEqualTo("id", id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful() && task.getResult() != null){
+                            for (QueryDocumentSnapshot documentSnapshot: task.getResult()){
+                                String doc = documentSnapshot.getId();
+                                db.collection("User")
+                                        .document(doc)
+                                        .delete();
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void searchSessionMembersBySessionId(long sessionId){
+        db.collection("SessionMembers")
+                .whereEqualTo("SessionId", sessionId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful() && task.getResult() != null){
+                            for(QueryDocumentSnapshot snapshot: task.getResult()){
+                                deleteSessionMembersByUID((long)snapshot.getData().get("UID"), snapshot.getId());
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void deleteSessionMembersByUID(final long id, String document){
+        db.collection("SessionMembers")
+                .document(document)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        deleteUserFromSession(id);
+                    }
+                });
+    }
 
 }

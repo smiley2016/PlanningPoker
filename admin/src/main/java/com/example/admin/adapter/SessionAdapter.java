@@ -170,7 +170,9 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
                     FireBaseDataManager.getInstance().deleteSession(session.getSessionId(), context);
                     sessions.remove(session);
                     notifyDataSetChanged();
-                    callback.onNoItemInList();
+                    if (sessions.size() == 0){
+                        callback.onNoItemInList();
+                    }
                 }
             });
         }
