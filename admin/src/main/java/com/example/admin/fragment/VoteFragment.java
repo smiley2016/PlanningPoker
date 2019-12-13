@@ -13,12 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.admin.R;
 import com.example.admin.adapter.VoteAdapter;
+import com.example.admin.service.FireBaseDataManager;
+import com.example.admin.service.OnVoteCardGettedListener;
 import com.example.admin.util.Utils;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,16 +23,13 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VoteFragment extends BaseFragment {
+public class VoteFragment extends BaseFragment implements OnVoteCardGettedListener {
 
     @BindView(R.id.vote_recycler_view)
     RecyclerView recyclerView;
 
-    private VoteAdapter adapter;
-
     private long sessionId;
     private long questionId;
-    private long cardIndex;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,32 +54,12 @@ public class VoteFragment extends BaseFragment {
 
     private void initViews() {
         final ArrayList<String> cards = new ArrayList<>(Arrays.asList(Utils.cards));
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Session")
-                .whereEqualTo("SessionId", sessionId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful() && task.getResult() != null){
-                            for(QueryDocumentSnapshot snapshot: task.getResult()){
-                                cardIndex = (long )snapshot.getData().get("IndexOfCard");
-                                adapter = new VoteAdapter(createArrayFromString(cards.get((int)cardIndex)), sessionId, questionId);
-
-                                recyclerView.setLayoutManager(new GridLayoutManager(rootView.getContext(), 3));
-                                recyclerView.setAdapter(adapter);
-                            }
-                        }
-                    }
-                });
-
-
+        FireBaseDataManager.getInstance().getVoteCards(sessionId, cards, this);
     }
 
     private ArrayList<String> createArrayFromString(String cardString) {
-        String [] splittedArray;
-        splittedArray =  cardString.split(", ");
+        String[] splittedArray;
+        splittedArray = cardString.split(", ");
         return new ArrayList<>(Arrays.asList(splittedArray));
     }
 
@@ -96,5 +70,13 @@ public class VoteFragment extends BaseFragment {
             sessionId = getArguments().getLong("SESSION_ID");
             questionId = getArguments().getLong("QUESTION_ID");
         }
+    }
+
+    @Override
+    public void onVoteCardGet(long cardIndex, ArrayList<String> cards) {
+        VoteAdapter adapter = new VoteAdapter(createArrayFromString(cards.get((int) cardIndex)), sessionId, questionId);
+
+        recyclerView.setLayoutManager(new GridLayoutManager(rootView.getContext(), 3));
+        recyclerView.setAdapter(adapter);
     }
 }

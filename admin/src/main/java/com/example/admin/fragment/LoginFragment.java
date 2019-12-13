@@ -1,6 +1,7 @@
 package com.example.admin.fragment;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import androidx.annotation.Nullable;
 
 import com.example.admin.R;
 import com.example.admin.service.FireBaseDataManager;
+import com.example.admin.service.OnLoginCredentialsListener;
+import com.example.admin.util.Dialogs;
 import com.example.admin.util.FragmentNavigation;
 import com.example.admin.util.Utils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dmax.dialog.SpotsDialog;
 
-public class LoginFragment extends BaseFragment {
+public class LoginFragment extends BaseFragment implements OnLoginCredentialsListener {
 
     @BindView(R.id.login_email_edit_text)
     EditText emailEditText;
@@ -70,7 +73,9 @@ public class LoginFragment extends BaseFragment {
                 AlertDialog dialog = new SpotsDialog(rootView.getContext(), R.style.Custom);
                 dialog.show();
                 Utils.hideKeyboard(v);
-                FireBaseDataManager.getInstance().loginUser(rootView.getContext(), emailEditText, passwordEditText, dialog);
+                String email = emailEditText.getText().toString().trim();
+                String password = passwordEditText.getText().toString().trim();
+                FireBaseDataManager.getInstance().loginUser(rootView.getContext(), email, password, dialog, LoginFragment.this);
             }
         });
 
@@ -95,5 +100,45 @@ public class LoginFragment extends BaseFragment {
             dialog.dismiss();
         }
         dialog.dismiss();
+    }
+
+    @Override
+    public void onPasswordIncorrect(AlertDialog dialog, String email, String password) {
+
+        dialog.dismiss();
+        Dialogs.showAlertDialog(rootView.getContext(),
+                email,
+                password,
+                getResources().getString(R.string.wrong_password),
+                getResources().getString(R.string.wrong_password_message),
+                dialog, this);
+    }
+
+    @Override
+    public void onNoAdminPermission(AlertDialog dialog, String email, String password) {
+        dialog.dismiss();
+        Dialogs.showAlertDialog(rootView.getContext(),
+                email,
+                password,
+                getResources().getString(R.string.admin_privileges),
+                getResources().getString(R.string.no_admin_privileges_message),
+                dialog, this);
+
+    }
+
+    @Override
+    public void onUserNotExist(AlertDialog dialog, String email, String password) {
+        Dialogs.showAlertDialog(rootView.getContext(),
+                email,
+                password,
+                getResources().getString(R.string.user_not_exist),
+                getResources().getString(R.string.the_user_doesnt_exist_in_database),
+                dialog,this);
+    }
+
+    @Override
+    public void onNotValidEmail() {
+        emailEditText.requestFocus();
+        emailEditText.setError("Not a valid email!");
     }
 }

@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.admin.R;
 import com.example.admin.service.FireBaseDataManager;
-import com.example.admin.service.NoItemInListCallback;
+import com.example.admin.service.OnSessionExistListener;
 import com.example.admin.util.FragmentNavigation;
 import com.example.common.Session;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,9 +36,9 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.Holder> 
     private static final String TAG = SessionAdapter.class.getName();
     private ArrayList<Session> sessions;
     private Context context;
-    private NoItemInListCallback callback;
+    private OnSessionExistListener callback;
 
-    public SessionAdapter(ArrayList<Session> sessions, Context context, NoItemInListCallback callback) {
+    public SessionAdapter(ArrayList<Session> sessions, Context context, OnSessionExistListener callback) {
         this.sessions = sessions;
         this.context = context;
         this.callback = callback;

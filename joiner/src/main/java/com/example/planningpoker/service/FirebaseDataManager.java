@@ -25,7 +25,6 @@ public class FirebaseDataManager {
     private static FirebaseDataManager sInstance;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
 
     public static FirebaseDataManager getsInstance() {
         if (sInstance == null) {
@@ -40,113 +39,80 @@ public class FirebaseDataManager {
     }
 
     public void joinToSession(final String name, final long sessionId, final JoinSessionCallback callback) {
+        getLatestUserId(name, sessionId, callback);
+    }
 
-        db.collection("Session")
-                .whereEqualTo("SessionId", sessionId)
+    private void getLatestUserId(final String name, final long sessionId, final JoinSessionCallback callback) {
+        db.collection("User")
+                .orderBy("id", Query.Direction.DESCENDING)
+                .limit(1)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull final Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                if (sessionId == (long) documentSnapshot.getData().get("SessionId")) {
-                                    db.collection("User")
-                                            .orderBy("id", Query.Direction.DESCENDING)
-                                            .limit(1)
-                                            .get()
-                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<QuerySnapshot> idTask) {
-                                                    if (idTask.isSuccessful() && idTask.getResult() != null) {
-                                                        if(idTask.getResult().size() == 0){
-                                                            HashMap<String, Object> user = new HashMap<>();
-                                                            user.put("UID", null);
-                                                            user.put("id", 1);
-                                                            user.put("IsAdmin", false);
-                                                            user.put("UserName", name);
-
-                                                            db.collection("User")
-                                                                    .add(user)
-                                                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                                        @Override
-                                                                        public void onSuccess(DocumentReference documentReference) {
-                                                                            Log.d(TAG, "onSuccess: Joined");
-                                                                            HashMap<String, Object> sessionMember = new HashMap<>();
-                                                                            sessionMember.put("UID", 1);
-                                                                            sessionMember.put("SessionId", sessionId);
-                                                                            db.collection("SessionMembers")
-                                                                                    .add(sessionMember)
-                                                                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                                                        @Override
-                                                                                        public void onSuccess(DocumentReference documentReference) {
-                                                                                            Log.d(TAG, "onSuccess: User added to sessionMember");
-                                                                                            callback.onSessionJoined(1);
-                                                                                        }
-                                                                                    });
-                                                                        }
-                                                                    });
-                                                        }else{
-                                                            for (final QueryDocumentSnapshot idSnapshot : idTask.getResult()) {
-                                                                HashMap<String, Object> user = new HashMap<>();
-                                                                user.put("UID", null);
-                                                                user.put("id", ((long) idSnapshot.getData().get("id") + 1));
-                                                                user.put("IsAdmin", false);
-                                                                user.put("UserName", name);
-
-                                                                db.collection("User")
-                                                                        .add(user)
-                                                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                                            @Override
-                                                                            public void onSuccess(DocumentReference documentReference) {
-                                                                                Log.d(TAG, "onSuccess: Joined");
-                                                                                HashMap<String, Object> sessionMember = new HashMap<>();
-                                                                                sessionMember.put("UID", (long) idSnapshot.getData().get("id") + 1);
-                                                                                sessionMember.put("SessionId", sessionId);
-                                                                                db.collection("SessionMembers")
-                                                                                        .add(sessionMember)
-                                                                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                                                            @Override
-                                                                                            public void onSuccess(DocumentReference documentReference) {
-                                                                                                Log.d(TAG, "onSuccess: User added to sessionMember");
-                                                                                                callback.onSessionJoined((long)idSnapshot.getData().get("id"));
-                                                                                            }
-                                                                                        });
-                                                                            }
-                                                                        });
-                                                            }
-                                                        }
-
-
-                                                    }
-                                                }
-                                            });
+                    public void onComplete(@NonNull Task<QuerySnapshot> idTask) {
+                        if (idTask.isSuccessful() && idTask.getResult() != null) {
+                            if (idTask.getResult().size() == 0) {
+                                addUser(1, name, sessionId, callback);
+                            }else{
+                                for (QueryDocumentSnapshot snapshot: idTask.getResult()){
+                                    addUser((long)snapshot.getData().get("id")+1, name, sessionId, callback);
                                 }
                             }
-                        } else {
-                            callback.onSessionNotExist();
                         }
                     }
                 });
-
     }
 
-    public void getUserName(long uid, final OnStatisticsCallback callback){
+    private void addUser(final long id, String name, final long sessionId, final JoinSessionCallback callback){
+        HashMap<String, Object> user = new HashMap<>();
+        user.put("UID", null);
+        user.put("id", id);
+        user.put("IsAdmin", false);
+        user.put("UserName", name);
+
+        db.collection("User")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "onSuccess: Joined");
+                        addSessionMembers(id, sessionId, callback);
+                    }
+                });
+    }
+
+    private void addSessionMembers(final long id, long sessionId, final JoinSessionCallback callback){
+        HashMap<String, Object> sessionMember = new HashMap<>();
+        sessionMember.put("UID", id);
+        sessionMember.put("SessionId", sessionId);
+        db.collection("SessionMembers")
+                .add(sessionMember)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "onSuccess: User added to sessionMember");
+                        callback.onSessionJoined(id);
+                    }
+                });
+    }
+
+    public void getUserName(long uid, final OnStatisticsCallback callback) {
         db.collection("User")
                 .whereEqualTo("id", uid)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful() && task.getResult() != null){
-                            for(QueryDocumentSnapshot snapshot: task.getResult()){
-                                callback.onUserNameUpdate((String)snapshot.getData().get("UserName"));
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                callback.onUserNameUpdate((String) snapshot.getData().get("UserName"));
                             }
                         }
                     }
                 });
     }
 
-    public void getAnswer(final long sessionId, final long questionId, final OnStatisticsFragmentCallback callback){
+    public void getAnswer(final long sessionId, final long questionId, final OnStatisticsFragmentCallback callback) {
         db.collection("Answer")
                 .whereEqualTo("SessionId", sessionId)
                 .whereEqualTo("QuestionId", questionId)
@@ -154,13 +120,13 @@ public class FirebaseDataManager {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful() && task.getResult() != null){
-                            for(QueryDocumentSnapshot snapshot: task.getResult()){
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
                                 callback.onAnswerGetting(new Answer(
-                                        (long)snapshot.getData().get("UID"),
-                                        (long)snapshot.getData().get("SessionId"),
-                                        (long)snapshot.getData().get("QuestionId"),
-                                        (String)snapshot.getData().get("AnswerId")));
+                                        (long) snapshot.getData().get("UID"),
+                                        (long) snapshot.getData().get("SessionId"),
+                                        (long) snapshot.getData().get("QuestionId"),
+                                        (String) snapshot.getData().get("AnswerId")));
                             }
                         }
                     }

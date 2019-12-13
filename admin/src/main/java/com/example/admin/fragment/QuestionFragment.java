@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.admin.R;
 import com.example.admin.adapter.QuestionAdapter;
+import com.example.admin.service.FireBaseDataManager;
 import com.example.common.Question;
 import com.example.admin.util.FragmentNavigation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -73,24 +74,7 @@ public class QuestionFragment extends BaseFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
         recyclerView.setAdapter(adapter);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Question")
-                .whereEqualTo("SessionId", sessionId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                adapter.addToList(new Question(
-                                        (long) snapshot.getData().get("QuestionId"),
-                                        sessionId,
-                                        (String) snapshot.getData().get("Description"),
-                                        (String) snapshot.getData().get("Story")));
-                            }
-                        }
-                    }
-                });
+        FireBaseDataManager.getInstance().getQuestions(sessionId, adapter);
     }
 
     @Override

@@ -6,15 +6,17 @@ import android.content.DialogInterface;
 import android.widget.EditText;
 
 import com.example.admin.service.FireBaseDataManager;
+import com.example.admin.service.OnLoginCredentialsListener;
 
 public class Dialogs {
 
     public static void showAlertDialog(final Context context,
-                                       final EditText emailText,
-                                       final EditText passwordText,
+                                       final String emailText,
+                                       final String passwordText,
                                        String title,
                                        String message,
-                                       final AlertDialog aDialog){
+                                       final AlertDialog aDialog,
+                                       final OnLoginCredentialsListener listener){
         new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
@@ -22,7 +24,7 @@ public class Dialogs {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        FireBaseDataManager.getInstance().loginUser(context, emailText, passwordText, aDialog);
+                        FireBaseDataManager.getInstance().loginUser(context, emailText, passwordText, aDialog, listener);
                     }
                 })
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
